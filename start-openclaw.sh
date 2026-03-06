@@ -310,11 +310,18 @@ if r2_configured; then
 fi
 
 # ============================================================
-# ENABLE HOOKS
+# INJECT SOURCE INDEX INTO WORKSPACE
 # ============================================================
-if [ -d "/root/clawd/hooks/source-index" ]; then
-    echo "Enabling source-index hook..."
-    openclaw hooks enable source-index 2>/dev/null || echo "WARNING: Could not enable source-index hook (may need manual setup)"
+WORKSPACE_AGENTS="/root/.openclaw/workspace/AGENTS.md"
+if [ -f "/root/clawd/DIRPACK.md" ]; then
+    echo "Injecting source index into workspace AGENTS.md..."
+    if [ -f "$WORKSPACE_AGENTS" ] && ! grep -q "DIRPACK" "$WORKSPACE_AGENTS"; then
+        printf '\n\n---\n\n' >> "$WORKSPACE_AGENTS"
+        cat /root/clawd/DIRPACK.md >> "$WORKSPACE_AGENTS"
+    elif [ ! -f "$WORKSPACE_AGENTS" ]; then
+        cp /root/clawd/DIRPACK.md "$WORKSPACE_AGENTS"
+    fi
+    echo "Source index injected"
 fi
 
 # ============================================================
