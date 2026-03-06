@@ -1,18 +1,11 @@
 import * as fs from "fs";
-import * as path from "path";
-const DIRPACK_PATHS = [
-  "/root/clawd/skills/source-index/DIRPACK.md",
-  "/root/clawd/DIRPACK.md",
-  "/root/clawd/hooks/source-index/DIRPACK.md"
-];
+const DIRPACK_PATH = "/root/clawd/DIRPACK.md";
 function getDirpackContent() {
-  for (const p of DIRPACK_PATHS) {
-    try {
-      if (fs.existsSync(p)) {
-        return fs.readFileSync(p, "utf-8");
-      }
-    } catch {
+  try {
+    if (fs.existsSync(DIRPACK_PATH)) {
+      return fs.readFileSync(DIRPACK_PATH, "utf-8");
     }
+  } catch {
   }
   return "";
 }
@@ -24,7 +17,7 @@ async function sourceIndexHook(event) {
   if (!content) return;
   const dirpackFile = {
     name: "DIRPACK.md",
-    path: DIRPACK_PATHS[0],
+    path: DIRPACK_PATH,
     content: "# Moltworker Source Index\n\nThis is the source code map of the moltworker infrastructure that runs you.\n\n" + content,
     missing: false
   };

@@ -40,6 +40,9 @@ RUN chmod +x /usr/local/bin/start-openclaw.sh
 COPY skills/ /root/clawd/skills/
 COPY hooks/ /root/clawd/hooks/
 
+# Copy source index for bootstrap hook
+COPY DIRPACK.md /root/clawd/DIRPACK.md
+
 # Build metadata (updated by CI/deploy)
 ARG BUILD_COMMIT=unknown
 ENV MOLTWORKER_BUILD_COMMIT=${BUILD_COMMIT}
