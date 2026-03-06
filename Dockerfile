@@ -39,6 +39,10 @@ RUN chmod +x /usr/local/bin/start-openclaw.sh
 # Copy custom skills
 COPY skills/ /root/clawd/skills/
 
+# Build metadata (updated by CI/deploy)
+ARG BUILD_COMMIT=unknown
+ENV MOLTWORKER_BUILD_COMMIT=${BUILD_COMMIT}
+
 # Set working directory
 WORKDIR /root/clawd
 

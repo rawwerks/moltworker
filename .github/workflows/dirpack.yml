@@ -1,0 +1,56 @@
+name: Update dirpack source index
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'DIRPACK.md'
+
+jobs:
+  dirpack:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dirpack
+        run: |
+          curl -fsSL https://sh.rustup.rs | sh -s -- -y
+          source "$HOME/.cargo/env"
+          cargo install dirpack
+
+      - name: Generate dirpack index
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          COMMIT_SHA="${{ github.sha }}"
+          COMMIT_SHORT="${COMMIT_SHA:0:7}"
+          REPO_URL="${{ github.server_url }}/${{ github.repository }}"
+
+          # Generate raw dirpack
+          dirpack pack -t 4800 --root-label moltworker -o /tmp/dirpack-raw.md
+
+          # Wrap with metadata header
+          cat > DIRPACK.md << EOF
+          # Moltworker Source Index
+
+          Built from [\`${COMMIT_SHORT}\`](${REPO_URL}/commit/${COMMIT_SHA}) on $(date -u +%Y-%m-%dT%H:%M:%SZ)
+          Source: [${GITHUB_REPOSITORY}](${REPO_URL})
+
+          For full source, clone: \`git clone ${REPO_URL}.git\`
+
+          ---
+
+          $(cat /tmp/dirpack-raw.md)
+          EOF
+
+          # Also copy into the skill directory for container access
+          cp DIRPACK.md skills/source-index/DIRPACK.md
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add DIRPACK.md skills/source-index/DIRPACK.md
+          git diff --cached --quiet || git commit -m "Update DIRPACK.md source index [skip ci]"
+          git push
