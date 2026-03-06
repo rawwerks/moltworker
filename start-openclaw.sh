@@ -310,6 +310,14 @@ if r2_configured; then
 fi
 
 # ============================================================
+# ENABLE HOOKS
+# ============================================================
+if [ -d "/root/clawd/hooks/source-index" ]; then
+    echo "Enabling source-index hook..."
+    openclaw hooks enable source-index 2>/dev/null || echo "WARNING: Could not enable source-index hook (may need manual setup)"
+fi
+
+# ============================================================
 # START GATEWAY
 # ============================================================
 echo "Starting OpenClaw Gateway..."

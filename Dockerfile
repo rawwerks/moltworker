@@ -36,8 +36,9 @@ RUN mkdir -p /root/.openclaw \
 COPY start-openclaw.sh /usr/local/bin/start-openclaw.sh
 RUN chmod +x /usr/local/bin/start-openclaw.sh
 
-# Copy custom skills
+# Copy custom skills and hooks
 COPY skills/ /root/clawd/skills/
+COPY hooks/ /root/clawd/hooks/
 
 # Build metadata (updated by CI/deploy)
 ARG BUILD_COMMIT=unknown
