@@ -159,6 +159,15 @@ config.gateway.port = 18789;
 config.gateway.mode = 'local';
 config.gateway.trustedProxies = ['10.1.0.0'];
 
+// Allow the Worker's public URL as a WebSocket origin.
+// The Worker proxy is the trust boundary (token auth), so the gateway
+// can trust the Host header for origin checks.
+config.gateway.controlUi = config.gateway.controlUi || {};
+if (process.env.WORKER_URL) {
+    config.gateway.controlUi.allowedOrigins = [process.env.WORKER_URL];
+}
+config.gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback = true;
+
 if (process.env.OPENCLAW_GATEWAY_TOKEN) {
     config.gateway.auth = config.gateway.auth || {};
     config.gateway.auth.token = process.env.OPENCLAW_GATEWAY_TOKEN;
