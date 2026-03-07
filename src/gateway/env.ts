@@ -56,5 +56,8 @@ export function buildEnvVars(env: MoltbotEnv): Record<string, string> {
   if (env.R2_SECRET_ACCESS_KEY) envVars.R2_SECRET_ACCESS_KEY = env.R2_SECRET_ACCESS_KEY;
   if (env.R2_BUCKET_NAME) envVars.R2_BUCKET_NAME = env.R2_BUCKET_NAME;
 
+  // Sponsor secret proxy: organism identity for use-secret CLI
+  if (env.ORGANISM_ID) envVars.ORGANISM_ID = env.ORGANISM_ID;
+
   return envVars;
 }
